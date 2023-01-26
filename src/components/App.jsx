@@ -40,6 +40,23 @@ export class App extends Component {
     });
     return true;
   };
+  getFilteredContacts() {
+    const { filter, contacts } = this.state;
+
+    if (!filter) {
+      return contacts;
+    }
+
+    const normalizedFilter = filter.toLowerCase();
+    const result = contacts.filter(({ name, number }) => {
+      return (
+        name.toLowerCase().includes(normalizedFilter) ||
+        number.toLowerCase().includes(normalizedFilter)
+      );
+    });
+
+    return result;
+  }
 
   isDublicate(name, number) {
     const normalizedName = name.toLowerCase();
@@ -59,27 +76,12 @@ export class App extends Component {
   handleFilter = ({ target }) => {
     this.setState({ filter: target.value });
   };
-  getFilteredContacts() {
-    const { filter, contacts } = this.state;
-
-    if (!filter) {
-      return contacts;
-    }
-    const normalizedFilter = filter.toLowerCase();
-    const result = contacts.filter(({ name, number }) => {
-      return (
-        name.toLowerCase().includes(normalizedFilter) ||
-        number.toLowerCase().includes(normalizedFilter)
-      );
-    });
-    return result;
-  }
 
   render() {
+    const { filter } = this.state;
     const { addContact, removeContact, handleFilter } = this;
-    const contacts = this.getFilteredContacts();
-    const isContact = Boolean(contacts.length);
-
+    const contactsFilter = this.getFilteredContacts();
+    const isContact = Boolean(contactsFilter.length);
     return (
       <>
         <div>
@@ -87,11 +89,16 @@ export class App extends Component {
         </div>
         <div>
           <h2>Contacts</h2>
-          <ContactsFilter handleChange={handleFilter} />
-          {isContact && (
-            <ContactsList removeContact={removeContact} contacts={contacts} />
-          )}
-          {!isContact && <p>No contacts in list</p>}
+          <ul>
+            <ContactsFilter handleChange={handleFilter} filter={filter} />
+            {isContact && (
+              <ContactsList
+                removeContact={removeContact}
+                contacts={contactsFilter}
+              />
+            )}
+            {!isContact && <p>No contacts in list</p>}
+          </ul>
         </div>
       </>
     );

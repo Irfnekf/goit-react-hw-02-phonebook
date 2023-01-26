@@ -1,18 +1,24 @@
 import PropTypes from 'prop-types';
 import css from './contactsFilter.module.css';
+import { Component } from 'react';
 
-const ContactsFilter = ({ handleChange }) => {
-  return (
-    <div className={css.searchWrapper}>
-      <label className={css.label}> Find contacts by name</label>
-      <input
-        className={css.filterInput}
-        name="filter"
-        onChange={handleChange}
-      />
-    </div>
-  );
-};
+class ContactsFilter extends Component {
+  render() {
+    const { handleChange, filter } = this.props;
+
+    return (
+      <div className={css.searchWrapper}>
+        <label className={css.label}> Find contacts by name</label>
+        <input
+          value={filter}
+          className={css.filterInput}
+          name="filter"
+          onChange={handleChange}
+        />
+      </div>
+    );
+  }
+}
 
 ContactsFilter.propTypes = {
   handleChange: PropTypes.func.isRequired,
